@@ -32,7 +32,7 @@ def send_message_to_chatgpt(prompt, conversation_history):
 def upload_to_github(filename, content):
     g = Github(github_access_token)
     user = g.get_user()
-    repo = user.get_repo("Doc-generation")
+    repo = user.get_repo("mikefusc/Doc-generation")
 
     try:
         file = repo.get_contents(f"/docs/{filename}", ref="main")
@@ -61,7 +61,7 @@ fixed_prompts = [
 
 for prompt in fixed_prompts:
     time.sleep(20)  # Add rate limit (3 requests per minute)
-    
+    prompt += " written in Python."
     response_message = send_message_to_chatgpt(prompt, conversation_history)
     conversation_history.append({"role": "user", "content": prompt})
     conversation_history.append({"role": "assistant", "content": response_message})
@@ -69,3 +69,5 @@ for prompt in fixed_prompts:
     if "Md format" in prompt:
         filename = prompt.split(" in ")[0].replace(" ", "_") + ".md"
         upload_to_github(filename, response_message)
+
+print("All documents have been generated and uploaded to the GitHub repo.")
