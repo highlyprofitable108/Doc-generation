@@ -55,7 +55,7 @@ if __name__ == "__main__":
         "Write me a 'things we still may need' list in MD format.",
     ]
 
-    initial_prompt = input("Enter a prompt: ") + " written in Python."
+    initial_prompt = "Hi I just created a new github repo I would like your help with. The repo is a document generator that will call github api to create a new repo. Based on the user description of the repo, we will begin sending information to api asking for chatgpt written in Python."
     conversation_history.append({"role": "user", "content": initial_prompt})
     response_message = send_message_to_chatgpt(initial_prompt, conversation_history)
     if response_message:
