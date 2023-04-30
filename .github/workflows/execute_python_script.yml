@@ -23,7 +23,7 @@ jobs:
 
     - name: Execute Python script
       run: |
-        python your_script.py
+        python chatgpt.py
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}
