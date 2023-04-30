@@ -9,7 +9,7 @@ github_access_token = os.environ["MY_GITHUB_ACCESS_TOKEN"]
 
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {github_access_token}"
+    "Authorization": f"token {github_access_token}"
 }
 
 def send_message_to_chatgpt(prompt, conversation_history):
