@@ -2,10 +2,15 @@ import requests
 import json
 import time
 import os
-from github import Github
+import base64
 
 openai_api_key = os.environ["OPENAI_API_KEY"]
 github_access_token = os.environ["MY_GITHUB_ACCESS_TOKEN"]
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {github_access_token}"
+}
 
 def send_message_to_chatgpt(prompt, conversation_history):
     url = "https://api.openai.com/v1/chat/completions"
@@ -30,15 +35,19 @@ def send_message_to_chatgpt(prompt, conversation_history):
         return None
 
 def upload_to_github(filename, content):
-    g = Github(github_access_token)
-    user = g.get_user()
-    repo = user.get_repo("mikefusc/Doc-generation")
+    url = f"https://api.github.com/repos/mikefusc/Doc-generation/contents/docs/{filename}"
+    content_base64 = base64.b64encode(content.encode()).decode()
 
-    try:
-        file = repo.get_contents(f"/docs/{filename}", ref="main")
-        repo.update_file(file.path, f"Update {filename}", content, file.sha, branch="main")
-    except:
-        repo.create_file(f"/docs/{filename}", f"Create {filename}", content, branch="main")
+    data = {
+        "message": f"Create/update {filename}",
+        "content": content_base64
+    }
+
+    response = requests.put(url, headers=headers, json=data)
+    if response.status_code in [201, 200]:
+        print(f"Successfully uploaded {filename}")
+    else:
+        print(f"Error {response.status_code}: {response.text}")
 
 initial_prompt = "Hi I just created a new github repo I would like your help with. The repo is a document generator that will call github api to create a new repo. Based on the user description of the repo, we will begin sending information to api asking for chatgpt to create specific files in .md format (Ex: test plan, high level design, tech specs, executive summary, readme)"
 
